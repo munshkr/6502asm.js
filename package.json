@@ -2,9 +2,9 @@
   "name": "6502asm",
   "version": "0.1.0",
   "description": "A 6502 assembler written in Javascript",
-  "main": "index.js",
+  "main": "lib/assembler.js",
   "bin": {
-    "6502asm.js": "./index.js"
+    "6502asm": "bin/6502asm.js"
   },
   "scripts": {
     "test": "mocha"
