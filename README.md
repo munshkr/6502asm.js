@@ -1,4 +1,4 @@
-# 6502asm.js
+# 6502asm.js [![Build Status](https://travis-ci.org/munshkr/6502asm.js.svg?branch=master)](https://travis-ci.org/munshkr/6502asm.js)
 
 A 6502 assembler written in Javascript
 
