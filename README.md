@@ -2,10 +2,8 @@
 
 A 6502 assembler written in Javascript
 
-*NOTE: This is still in pre-alpha stage.* This means that:
-
-* It is not a proper npm package: you'll have to clone the repo to install.
-* Unstable, slow and ugly code lies ahead.
+*NOTE: This is still in pre-alpha stage.* That means unstable, slow and ugly
+code lies ahead.
 
 You're welcome to submit patches or features!
 
@@ -17,9 +15,28 @@ it on browsers).
 
 ## Install
 
-After cloning repo, install all packages with `npm install`.
+You can install with npm:
 
-Execute `npm test` to run unit tests.
+```bash
+npm install munshkr/6502asm.js
+```
+
+If you clone the repo, install all dependency packages with `npm install`.
+
+Then execute `npm test` to run unit tests and verify everything works.
+
+## Usage
+
+```
+  Usage: 6502asm [options] <file>
+
+  Options:
+
+    -h, --help           output usage information
+    -o, --output [file]  output object file (default: ./a.out)
+    -a, --print-ast      print parser's AST
+    -s, --print-symbols  print symbols table
+```
 
 ## Contributing
 
