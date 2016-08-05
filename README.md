@@ -9,6 +9,12 @@ A 6502 assembler written in Javascript
 
 You're welcome to submit patches or features!
 
+## Dependencies
+
+Uses Ecmascript 6 extensively so you need either Node 6+, or
+[Babel](https://babeljs.io/) to transpile to ES5 (especially if you need to run
+it on browsers).
+
 ## Install
 
 After cloning repo, install all packages with `npm install`.
