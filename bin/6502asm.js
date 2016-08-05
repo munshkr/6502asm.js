@@ -29,7 +29,8 @@ if (program.args.length > 1) {
 
 const PEG = require('pegjs');
 const fs = require('fs');
-const assemble = require('./lib/assembler.js').assemble;
+const path = require('path');
+const assemble = require('../lib/assembler.js').assemble;
 
 function abort(err) {
   if (err.location) {
@@ -47,7 +48,7 @@ function generateParser(grammarPath, options) {
 }
 
 function parse(sourcePath, options) {
-  let parser = generateParser('lib/grammar.peg');
+  let parser = generateParser(path.join(__dirname, '../lib/grammar.peg'));
 
   const source = fs.readFileSync(sourcePath).toString();
   const ast = parser.parse(source);

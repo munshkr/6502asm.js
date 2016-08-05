@@ -1,8 +1,9 @@
 const fs = require('fs');
 const assert = require('assert');
 const PEG = require('pegjs');
+const path = require('path');
 
-const grammar = fs.readFileSync('lib/grammar.peg').toString();
+const grammar = fs.readFileSync(path.join(__dirname, '../lib/grammar.peg')).toString();
 const parse = PEG.buildParser(grammar).parse;
 const assemble = require('../lib/assembler').assemble;
 
