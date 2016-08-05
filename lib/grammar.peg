@@ -1,0 +1,374 @@
+/*
+ * 6502 Grammar
+ * ============
+ */
+
+{
+  function buildTree(head, tail, builder) {
+    var result = head, i;
+
+    for (i = 0; i < tail.length; i++) {
+      result = builder(result, tail[i]);
+    }
+
+    return result;
+  }
+
+  function buildBinaryExpression(head, tail) {
+    return buildTree(head, tail, function(result, element) {
+      return {
+        type:     'binary',
+        operator: element[1],
+        left:     result,
+        right:    element[3]
+      };
+    });
+  }
+
+  function optionalList(value) {
+    return value !== null ? value : [];
+  }
+}
+
+Start
+  = __ program:Program __ { return program; }
+
+/* ----- Lexical Grammar ----- */
+
+SourceCharacter
+  = .
+
+S 'whitespace'
+  = '\t'
+  / '\v'
+  / '\f'
+  / ' '
+  / '\u00A0'
+  / '\uFEFF'
+
+LineTerminator
+  = [\n\r\u2028\u2029]
+
+LineTerminatorSequence 'end of line'
+  = '\n'
+  / '\r\n'
+  / '\r'
+  / '\u2028'
+  / '\u2029'
+
+Comment 'comment'
+  = (MultiLineComment
+  / SingleLineComment)
+    { return { type: 'comment', value: text() }; }
+
+MultiLineComment
+  = '/*' (!'*/' SourceCharacter)* '*/'
+
+MultiLineCommentNoLineTerminator
+  = '/*' (!('*/' / LineTerminator) SourceCharacter)* '*/'
+
+SingleLineComment
+  = (';' / '//') (!LineTerminator SourceCharacter)*
+
+Identifier
+  = [A-Za-z_] [A-Za-z0-9_]*
+    { return text(); }
+
+Bit 'bit'
+  = [01]
+
+Digit 'digit'
+  = [0-9]
+
+Hexit 'hex digit'
+  = [0-9a-fA-F]
+
+DecLiteral
+  = neg:[-]? digits:Digit+
+    { return parseInt((!neg ? '':'-') + digits.join(''), 10); }
+
+HexLiteral
+  = ('$' / '0x') hexits:Hexit+
+    { return parseInt(hexits.join(''), 16); }
+
+BinLiteral
+  = ('0b' / '%') bits:Bit+
+    { return parseInt(bits.join(''), 2); }
+
+PC
+  = '*'
+
+SQString 'single-quoted string'
+  = "'" chars:(SQStringChar*) "'" { return chars.join(''); }
+
+DQString 'double-quoted string'
+  = '"' chars:(DQStringChar*) '"' { return chars.join(''); }
+
+SQStringChar
+  = !("'" / LineTerminatorSequence) .
+    { return text(); }
+
+DQStringChar
+  = !('"' / LineTerminatorSequence) .
+    { return text(); }
+
+NumLiteral
+  = n:(BinLiteral / HexLiteral / DecLiteral) &{ return n <= 0xffff; }
+    { return { type: 'number', value: n }; }
+
+StringLiteral
+  = s:(SQString / DQString)
+    { return { type: 'string', value: s }; }
+
+LabelLiteral
+  = l:(LabelName / PC)
+    { return { type: 'label', value: l }; }
+
+__ = (S / LineTerminatorSequence)*
+
+/* from javascript pegjs example
+__
+  = (WhiteSpace / LineTerminatorSequence / Comment)*
+
+_
+  = (WhiteSpace / MultiLineCommentNoLineTerminator)*
+*/
+
+/* ----- Expressions ----- */
+
+Term
+  = value:(NumLiteral / StringLiteral / LabelLiteral)
+    { return { type: 'term', value: value }; }
+
+Factor
+  = '(' S* expr:Expression S* ')' { return expr; }
+  / Term
+
+UnaryExpression
+  = op:UnaryOperator? arg:Factor
+    {
+      return {
+        type: 'unary',
+        operator: op,
+        argument: arg
+      };
+    }
+
+UnaryOperator
+  = '-'
+  / '~'
+  / '!'
+  / '<'
+  / '>'
+
+MultiplicativeExpression
+  = head:UnaryExpression tail:(S* MultiplicativeOperator S* UnaryExpression)*
+    { return buildBinaryExpression(head, tail); }
+
+MultiplicativeOperator
+  = '*'
+  / $(!'/*' '/')
+
+AdditiveExpression
+  = head:MultiplicativeExpression tail:(S* AdditiveOperator S* MultiplicativeExpression)*
+    { return buildBinaryExpression(head, tail); }
+
+AdditiveOperator
+  = '+'
+  / '-'
+
+ShiftExpression
+  = head:AdditiveExpression tail:(S* ShiftOperator S* AdditiveExpression)*
+    { return buildBinaryExpression(head, tail); }
+
+ShiftOperator
+  = '<<'
+  / '>>'
+
+RelationalExpression
+  = head:ShiftExpression tail:(S* RelationalOperator S* ShiftExpression)*
+    { return buildBinaryExpression(head, tail); }
+
+RelationalOperator
+  = '<='
+  / '>='
+  / $('<' !'<')
+  / $('>' !'>')
+
+EqualityExpression
+  = head:RelationalExpression tail:(S* EqualityOperator S* RelationalExpression)*
+    { return buildBinaryExpression(head, tail); }
+
+EqualityOperator
+  = '=='
+  / '!='
+
+BitwiseANDExpression
+  = head:EqualityExpression tail:(S* BitwiseANDOperator S* EqualityExpression)*
+    { return buildBinaryExpression(head, tail); }
+
+BitwiseANDOperator
+  = '&'
+
+BitwiseXORExpression
+  = head:BitwiseANDExpression tail:(S* BitwiseXOROperator S* BitwiseANDExpression)*
+    { return buildBinaryExpression(head, tail); }
+
+BitwiseXOROperator
+  = '^'
+
+BitwiseORExpression
+  = head:BitwiseXORExpression tail:(S* BitwiseOROperator S* BitwiseXORExpression)*
+    { return buildBinaryExpression(head, tail); }
+
+BitwiseOROperator
+  = '|'
+
+LogicalANDExpression
+  = head:BitwiseORExpression tail:(S* LogicalANDOperator S* BitwiseORExpression)*
+    { return buildBinaryExpression(head, tail); }
+
+LogicalANDOperator
+  = '&&'
+
+LogicalORExpression
+  = head:LogicalANDExpression tail:(S* LogicalOROperator S* LogicalANDExpression)*
+    { return buildBinaryExpression(head, tail); }
+
+LogicalOROperator
+  = '||'
+
+Expression
+  = LogicalORExpression
+
+
+/* ----- Statements ----- */
+
+Element = e:(MultiLineElement / SingleLineElement)
+  {
+    var statements;
+    if (e.type !== 'comment') {
+      statements = e.filter(function(s) { return s; });
+      for (var i = 0; i < statements.length; i++) {
+        statements[i].line = location().start.line;
+      }
+    } else {
+      statements = [];
+    }
+    return statements;
+  }
+
+MultiLineElement
+  = Comment
+
+SingleLineElement
+  = (Label? SingleLineDirective)
+  / ld:(LabelDefinition) { return [ld]; }
+  / (Label? Instruction?)
+
+SingleLineDirective
+  = dir:(SetByte / SetWord / Reserve) S* Comment?
+    { return dir; }
+
+Instruction
+  = name:Mnemonic op:(S+ Operand)? S* Comment?
+    { return { type: 'inst', name: name, operand: op && op[1] }; }
+
+LabelDefinition
+  = name:(LabelName / PC) S* '=' S* expr:Expression S* Comment?
+    { return { type: 'label_def', name: name, expr: expr }; }
+
+Label
+  = name:LabelName ':' S* Comment?
+    { return { type: 'label', name: name }; }
+
+LabelName
+  = Identifier
+
+/* ----- Instructions ----- */
+
+Mnemonic
+  = [A-Za-z] [A-Za-z] [A-Za-z]
+    { return text().toLowerCase(); }
+
+Operand
+  = IndirectXOp
+  / IndirectYOp
+  / IndirectOp
+  / ImmediateOp
+  / AbsoluteXOp
+  / AbsoluteYOp
+  / AbsoluteOp
+
+ImmediateOp
+  = '#' expr:Expression
+    { return { type: 'op', mode: 'imm', expr: expr }; }
+
+// abs, rel, zp
+AbsoluteOp
+  = expr:Expression
+    { return { type: 'op', mode: 'abs', expr: expr }; }
+
+// abx, zpx
+AbsoluteXOp
+  = expr:Expression S* ',' S* ('x' / 'X')
+    { return { type: 'op', mode: 'abx', expr: expr }; }
+
+// aby, zpy
+AbsoluteYOp
+  = expr:Expression S* ',' S* ('y' / 'Y')
+    { return { type: 'op', mode: 'aby', expr: expr }; }
+
+IndirectOp
+  = '(' S* expr:Expression S* ')'
+    { return { type: 'op', mode: 'ind', expr: expr }; }
+
+IndirectXOp
+  = '(' S* expr:Expression S* ',' S* ('x' / 'X') S* ')'
+    { return { type: 'op', mode: 'izx', expr: expr }; }
+
+IndirectYOp
+  = '(' S* expr:Expression S* ')' S* ',' S* ('y' / 'Y')
+    { return { type: 'op', mode: 'izy', expr: expr }; }
+
+
+/* ----- Directives ----- */
+
+SetByte
+  = ('.byte'i / '.aasc'i) S+ fst:Expression rest:(',' S* e:Expression {return e})*
+    {
+      var exprs = [fst].concat(rest);
+      return { type: 'directive', name: 'byte', exprs: exprs };
+    }
+
+SetWord
+  = '.word'i S+ fst:Expression rest:(',' S* e:Expression {return e})*
+    {
+      var exprs = [fst].concat(rest);
+      return { type: 'directive', name: 'word', exprs: exprs };
+    }
+
+Reserve
+  = '.res'i S+ len:Expression fillByte:(',' S* e:Expression {return e})?
+    {
+      return { type: 'directive', name: 'res', len: len, fillByte: fillByte };
+    }
+
+
+/* ----- Programs ----- */
+
+Body
+  = head:Element tail:(LineTerminatorSequence+ S* e:Element {return e})*
+    {
+      var statements = head;
+      for (var i = 0; i < tail.length; i++) {
+        statements = statements.concat(tail[i]);
+      }
+      statements = statements
+        .filter(function(e) { return (e.type !== 'comment'); });
+      return statements;
+    }
+
+Program
+  = body:Body
+    { return { type: 'program', body: body }; }
