@@ -7,6 +7,25 @@ code lies ahead.
 
 You're welcome to submit patches or features!
 
+## Example
+
+```javascript
+let Assembler = require('6502asm').Assembler;
+let asm = new Assembler();
+
+asm.assemble(`
+  lda #$01
+  cmp #$02
+  bne notequal
+  sta $22
+notequal:
+  jmp *
+`)
+
+// > { objectCode: [ 169, 1, 201, 2, 208, 2, 133, 34, 0 ],
+//     symbolTable: { notequal: 8 } }
+```
+
 ## Dependencies
 
 Uses Ecmascript 6 extensively so you need either Node 6+, or
@@ -27,15 +46,19 @@ Then execute `npm test` to run unit tests and verify everything works.
 
 ## Usage
 
+To use it as a library, use Assembler class, as shown in the example above.
+
+There is also a command line program:
+
 ```
   Usage: 6502asm [options] <file>
 
   Options:
 
-    -h, --help           output usage information
-    -o, --output [file]  output object file (default: ./a.out)
-    -a, --print-ast      print parser's AST
-    -s, --print-symbols  print symbols table
+    -h, --help            output usage information
+    -o, --output [file]   output object file (default: ./a.out)
+    -s, --symbols [file]  output symbols table (in JSON)
+    -d, --debug           print debugging info
 ```
 
 ## Contributing
