@@ -22,7 +22,7 @@ notequal:
   jmp *
 `)
 
-// > { objectCode: [ 169, 1, 201, 2, 208, 2, 133, 34, 0 ],
+// > { objectCode: [ 169, 1, 201, 2, 208, 2, 133, 34, 76, 8, 0 ],
 //     symbolTable: { notequal: 8 } }
 ```
 
