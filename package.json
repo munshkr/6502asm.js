@@ -7,6 +7,7 @@
     "6502asm": "bin/6502asm.js"
   },
   "scripts": {
+    "prepublish": "make",
     "test": "mocha"
   },
   "repository": {
