@@ -27,10 +27,10 @@
   },
   "homepage": "https://github.com/munshkr/6502asm.js#readme",
   "dependencies": {
-    "commander": "^2.9.0",
-    "pegjs": "^0.9.0"
+    "commander": "^2.9.0"
   },
   "devDependencies": {
+    "pegjs": "^0.9.0",
     "mocha": "^3.0.1"
   }
 }
