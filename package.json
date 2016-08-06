@@ -4,7 +4,7 @@
   "description": "A 6502 assembler written in Javascript",
   "main": "lib/assembler.js",
   "bin": {
-    "6502asm": "bin/6502asm.js"
+    "6502asm.js": "bin/6502asm.js"
   },
   "scripts": {
     "prepublish": "make",
