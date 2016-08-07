@@ -1,6 +1,4 @@
-const fs = require('fs');
 const assert = require('assert');
-const path = require('path');
 
 let Assembler = require('../lib/assembler').Assembler;
 
@@ -281,7 +279,7 @@ describe('6502 Assembler', () => {
     });
 
     it('can use "-" unary operator', () => {
-      let prg = `foo = -1337`;
+      let prg = 'foo = -1337';
 
       assert.deepEqual(asm.assemble(prg), {
         objectCode: [], symbolTable: { foo: -1337 }
@@ -289,7 +287,7 @@ describe('6502 Assembler', () => {
     });
 
     it('can use "~" unary operator', () => {
-      let prg = `foo = ~0b11001100`;
+      let prg = 'foo = ~0b11001100';
 
       assert.deepEqual(asm.assemble(prg), {
         objectCode: [], symbolTable: { foo: -205 }
@@ -305,7 +303,7 @@ describe('6502 Assembler', () => {
       });
     });
     it('can use "+" binary operator', () => {
-      let prg = `foo = 10 + 0x100`;
+      let prg = 'foo = 10 + 0x100';
 
       assert.deepEqual(asm.assemble(prg), {
         objectCode: [], symbolTable: { foo: 0x10a }
@@ -322,7 +320,7 @@ describe('6502 Assembler', () => {
     });
 
     it('can use "*" binary operator', () => {
-      let prg = `foo = 32 * 2`;
+      let prg = 'foo = 32 * 2';
 
       assert.deepEqual(asm.assemble(prg), {
         objectCode: [], symbolTable: { foo: 64 }
@@ -330,7 +328,7 @@ describe('6502 Assembler', () => {
     });
 
     it('can use "/" binary operator', () => {
-      let prg = `foo = 100 / 2`;
+      let prg = 'foo = 100 / 2';
 
       assert.deepEqual(asm.assemble(prg), {
         objectCode: [], symbolTable: { foo: 50 }
@@ -338,7 +336,7 @@ describe('6502 Assembler', () => {
     });
 
     it('can use ">>" binary operator', () => {
-      let prg = `foo = 64 >> 3`;
+      let prg = 'foo = 64 >> 3';
 
       assert.deepEqual(asm.assemble(prg), {
         objectCode: [], symbolTable: { foo: 8 }
@@ -346,7 +344,7 @@ describe('6502 Assembler', () => {
     });
 
     it('can use "<<" binary operator', () => {
-      let prg = `foo = 2 << 4`;
+      let prg = 'foo = 2 << 4';
 
       assert.deepEqual(asm.assemble(prg), {
         objectCode: [], symbolTable: { foo: 32 }
@@ -390,7 +388,7 @@ describe('6502 Assembler', () => {
     });
 
     it('can use "^" binary operators', () => {
-      let prg = `foo = 1 ^ $ff`;
+      let prg = 'foo = 1 ^ $ff';
 
       assert.deepEqual(asm.assemble(prg), {
         objectCode: [], symbolTable: { foo: 0xfe }
@@ -398,7 +396,7 @@ describe('6502 Assembler', () => {
     });
 
     it('can use "|" binary operators', () => {
-      let prg = `foo = 1 | 4 | 8`;
+      let prg = 'foo = 1 | 4 | 8';
 
       assert.deepEqual(asm.assemble(prg), {
         objectCode: [], symbolTable: { foo: 13 }

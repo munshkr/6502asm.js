@@ -18,12 +18,12 @@ if (!process.argv.slice(2).length) {
 }
 
 if (program.args.length === 0) {
-  console.error(`Missing source file`)
+  console.error('Missing source file');
   process.exit(1);
 }
 
 if (program.args.length > 1) {
-  console.error(`Invalid arguments: ${program.args}`)
+  console.error(`Invalid arguments: ${program.args}`);
   process.exit(1);
 }
 

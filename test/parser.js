@@ -187,7 +187,7 @@ describe('6502 Parser', () => {
         }]
       }]);
 
-      assert.deepEqual(parse(`.byte >load_addr, <load_addr`), prg);
+      assert.deepEqual(parse('.byte >load_addr, <load_addr'), prg);
     });
   });
 
@@ -495,12 +495,12 @@ describe('6502 Parser', () => {
     it('reserves storage by filling bytes with 0', () => {
       assert.deepEqual(parse('.res 32'),
         prg({
-          type: "unary",
+          type: 'unary',
           operator: null,
           argument: {
-            type: "term",
+            type: 'term',
             value: {
-              type: "number",
+              type: 'number',
               value: 32
             }
           }
@@ -510,22 +510,22 @@ describe('6502 Parser', () => {
     it('reserves storage with a different filling byte', () => {
       assert.deepEqual(parse('.res 8, $ff'),
         prg({
-          type: "unary",
+          type: 'unary',
           operator: null,
           argument: {
-            type: "term",
+            type: 'term',
             value: {
-              type: "number",
+              type: 'number',
               value: 8
             }
           }
         }, {
-          type: "unary",
+          type: 'unary',
           operator: null,
           argument: {
-            type: "term",
+            type: 'term',
             value: {
-              type: "number",
+              type: 'number',
               value: 255
             },
           }
@@ -535,29 +535,29 @@ describe('6502 Parser', () => {
     it('reserves storage based on current LC', () => {
       assert.deepEqual(parse('.res $1000-*'),
         prg({
-          type: "binary",
+          type: 'binary',
           left: {
             argument: {
-              type: "term",
+              type: 'term',
               value: {
-                type: "number",
+                type: 'number',
                 value: 4096
               }
             },
             operator: null,
-            type: "unary"
+            type: 'unary'
           },
-          operator: "-",
+          operator: '-',
           right: {
             argument: {
-              type: "term",
+              type: 'term',
               value: {
-                type: "label",
-                value: "*",
+                type: 'label',
+                value: '*',
               }
             },
             operator: null,
-            type: "unary"
+            type: 'unary'
           }
         }, null));
     });
