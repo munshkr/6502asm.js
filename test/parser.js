@@ -1,10 +1,6 @@
-const fs = require('fs');
 const assert = require('assert');
-const PEG = require('pegjs');
-const path = require('path');
 
-const grammar = fs.readFileSync(path.join(__dirname, '../lib/grammar.peg')).toString();
-const parse = PEG.buildParser(grammar).parse;
+const parse = require('../lib/parser').parse;
 
 // Build a Program AST with one line with +statements+
 function buildProgram(statements) {
