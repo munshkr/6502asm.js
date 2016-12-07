@@ -124,9 +124,11 @@ describe('6502 Assembler', () => {
       `;
 
       assert.deepEqual(asm.assemble(prg), {
-        objectCode: [0x68, 0x6f, 0x6c, 0x61,
-                     0x63, 0x68, 0x61, 0x75,
-                     0xea],
+        objectCode: [
+          0x68, 0x6f, 0x6c, 0x61,
+          0x63, 0x68, 0x61, 0x75,
+          0xea
+        ],
         symbolTable: { data: 0, code: 8 }
       });
     });
@@ -158,10 +160,12 @@ describe('6502 Assembler', () => {
       `;
 
       assert.deepEqual(asm.assemble(prg), {
-        objectCode: [0xad, 0, 0x10,
-                     0xb5, 0x42,
-                     0xea,
-                     0xd0, 0xf8],
+        objectCode: [
+          0xad, 0, 0x10,
+          0xb5, 0x42,
+          0xea,
+          0xd0, 0xf8
+        ],
         symbolTable: { a: 0, b: 3, c: 5, d: 6 }
       });
     });
@@ -183,10 +187,12 @@ describe('6502 Assembler', () => {
       `;
 
       assert.deepEqual(asm.assemble(prg), {
-        objectCode: [0x60,
-                     0x20, 0, 0,
-                     0xca,
-                     0xd0, 0xfa],
+        objectCode: [
+          0x60,
+          0x20, 0, 0,
+          0xca,
+          0xd0, 0xfa
+        ],
         symbolTable: { work: 0, loop: 1 }
       });
     });
@@ -223,8 +229,10 @@ describe('6502 Assembler', () => {
       `;
 
       assert.deepEqual(asm.assemble(prg), {
-        objectCode: [0xa9, 0xff,
-                     0xa9, 0xe7],
+        objectCode: [
+          0xa9, 0xff,
+          0xa9, 0xe7
+        ],
         symbolTable: { foo: -1, bar: -25 }
       });
     });
@@ -272,8 +280,10 @@ describe('6502 Assembler', () => {
       `;
 
       assert.deepEqual(asm.assemble(prg), {
-        objectCode: [0xa5, 0x40,
-                     0xa5, 0x10],
+        objectCode: [
+          0xa5, 0x40,
+          0xa5, 0x10
+        ],
         symbolTable: { loadAddr: 0x1040 }
       });
     });
@@ -464,10 +474,12 @@ describe('6502 Assembler', () => {
     `;
 
     assert.deepEqual(asm.assemble(prg), {
-      objectCode: [0xad, 0, 0x10,
-                   0xa5, 0x10,
-                   0xbd, 0, 0x10,
-                   0xb5, 0x10],
+      objectCode: [
+        0xad, 0, 0x10,
+        0xa5, 0x10,
+        0xbd, 0, 0x10,
+        0xb5, 0x10
+      ],
       symbolTable: {}
     });
   });
@@ -498,9 +510,11 @@ describe('6502 Assembler', () => {
     `;
 
     assert.deepEqual(asm.assemble(prg), {
-      objectCode: [0x20, 0x4, 0,
-                   0x60,
-                   0x60],
+      objectCode: [
+        0x20, 0x4, 0,
+        0x60,
+        0x60
+      ],
       symbolTable: { start: 0, play: 4 }
     });
   });
